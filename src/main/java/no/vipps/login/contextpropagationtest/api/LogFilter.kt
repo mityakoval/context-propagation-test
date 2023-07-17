@@ -48,13 +48,13 @@ class LogFilter : WebFilter {
         return chain.filter(exchange)
             .contextWrite(Context.of(MDC_CONTAINER_CONTEXT_KEY, MdcContainer(MDC.getCopyOfContextMap())))
             .doFinally {
-            logWithEvent(
-                LogEvent.AUDIT_HTTP_RESPONSE,
-                LogKey.responseStatus to exchange.response.statusCode!!.value().toString()
-            ) {
-                logger.info { "Http response status" }
+                logWithEvent(
+                    LogEvent.AUDIT_HTTP_RESPONSE,
+                    LogKey.responseStatus to exchange.response.statusCode!!.value().toString()
+                ) {
+                    logger.info { "Http response status" }
+                }
+                MDC.clear()
             }
-            MDC.clear()
-        }
     }
 }
