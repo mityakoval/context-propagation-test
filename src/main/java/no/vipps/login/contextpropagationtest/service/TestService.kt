@@ -22,7 +22,6 @@ class TestService(
             .uri("/api/delayedResponse")
             .retrieve()
             .bodyToMono(String::class.java)
-            .timeout(java.time.Duration.ofMillis(1000))
             .awaitFirst()
     }
 }

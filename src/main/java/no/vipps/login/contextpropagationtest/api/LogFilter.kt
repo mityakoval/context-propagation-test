@@ -12,32 +12,10 @@ import reactor.util.context.Context
 
 private val logger = KotlinLogging.logger {}
 
-const val MDC_CONTAINER_CONTEXT_KEY = "mdc_container"
-
 @Component
 class LogFilter : WebFilter {
 
     override fun filter(exchange: ServerWebExchange, chain: WebFilterChain): Mono<Void> {
-
-
-        contextRegistry.registerThreadLocalAccessor(
-            MDC_CONTAINER_CONTEXT_KEY,
-            {
-                MdcContainer(
-                    mapOf(
-                        LogKey.requestId.toString() to MDC.get(LogKey.requestId.toString()),
-                        LogKey.requestMethod.toString() to MDC.get(LogKey.requestMethod.toString()),
-                        LogKey.requestURI.toString() to MDC.get(LogKey.requestURI.toString())
-                    )
-                )
-            },
-            { mdcContainer ->
-                MDC.put(LogKey.requestId.toString(), mdcContainer.mdc[LogKey.requestId.toString()])
-            },
-            {
-                MDC.clear()
-            }
-        )
 
         setMdc(
             LogKey.requestURI to exchange.request.uri.toString(),
@@ -45,8 +23,10 @@ class LogFilter : WebFilter {
             LogKey.requestId to exchange.request.id
         )
 
+        val mdcContext = Context.of(MDC_CONTAINER_CONTEXT_KEY, MdcContainer(MDC.getCopyOfContextMap()))
+
         return chain.filter(exchange)
-            .contextWrite(Context.of(MDC_CONTAINER_CONTEXT_KEY, MdcContainer(MDC.getCopyOfContextMap())))
+            .contextWrite(mdcContext)
             .doFinally {
                 logWithEvent(
                     LogEvent.AUDIT_HTTP_RESPONSE,
@@ -54,7 +34,6 @@ class LogFilter : WebFilter {
                 ) {
                     logger.info { "Http response status" }
                 }
-                MDC.clear()
             }
     }
 }
