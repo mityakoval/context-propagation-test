@@ -4,7 +4,7 @@ import io.micrometer.context.ContextRegistry
 import org.slf4j.MDC
 import org.springframework.context.annotation.Configuration
 
-val contextRegistry = ContextRegistry()
+val contextRegistry = ContextRegistry.getInstance()
 
 const val MDC_CONTAINER_CONTEXT_KEY = "mdc_container"
 

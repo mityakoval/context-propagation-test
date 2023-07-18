@@ -9,6 +9,7 @@ import org.springframework.web.server.WebFilter
 import org.springframework.web.server.WebFilterChain
 import reactor.core.publisher.Mono
 import reactor.util.context.Context
+import java.util.*
 
 private val logger = KotlinLogging.logger {}
 
@@ -20,13 +21,12 @@ class LogFilter : WebFilter {
         setMdc(
             LogKey.requestURI to exchange.request.uri.toString(),
             LogKey.requestMethod to exchange.request.method.name(),
-            LogKey.requestId to exchange.request.id
+            LogKey.requestId to UUID.randomUUID().toString()
         )
 
         val mdcContext = Context.of(MDC_CONTAINER_CONTEXT_KEY, MdcContainer(MDC.getCopyOfContextMap()))
 
         return chain.filter(exchange)
-            .contextWrite(mdcContext)
             .doFinally {
                 logWithEvent(
                     LogEvent.AUDIT_HTTP_RESPONSE,
@@ -34,6 +34,6 @@ class LogFilter : WebFilter {
                 ) {
                     logger.info { "Http response status" }
                 }
-            }
+            }.contextWrite(mdcContext)
     }
 }
