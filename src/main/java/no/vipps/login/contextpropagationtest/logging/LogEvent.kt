@@ -18,6 +18,7 @@ private fun code(eventCategory: EventCategory, name: String): String {
 enum class LogEvent(val event: String) {
     AUDIT_HTTP_REQUEST_RECEIVED(code(EventCategory.AUDIT, "http_request_received")),
     AUDIT_HTTP_RESPONSE(code(EventCategory.AUDIT, "http_response")),
+    AUDIT_GENERAL_EVENT(code(EventCategory.AUDIT, "general_event")),
 }
 
 enum class EventCategory {

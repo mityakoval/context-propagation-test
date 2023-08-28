@@ -20,12 +20,7 @@ fun <T> logWithData(vararg pair: Pair<LogKey, Any>, body: () -> T): T {
 }
 
 private fun <T> log(valuesToLog: Array<Pair<String, String>>, body: () -> T): T {
-    ContextSnapshotFactory.builder()
-        .contextRegistry(contextRegistry)
-        .build()
-        .captureAll()
-        .setThreadLocals()
-        .use { _ -> return withLoggingContext(*valuesToLog, body = body) }
+    return withLoggingContext(*valuesToLog, body = body)
 }
 
 fun setMdc(vararg pair: Pair<LogKey, Any>) {

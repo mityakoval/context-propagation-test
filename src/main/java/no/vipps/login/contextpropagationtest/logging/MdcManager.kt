@@ -8,7 +8,7 @@ val contextRegistry = ContextRegistry.getInstance()
 
 const val MDC_CONTAINER_CONTEXT_KEY = "mdc_container"
 
-@Configuration
+//@Configuration
 class MdcManager(
     val mdcKeys: List<LogKey> = listOf(
         LogKey.requestMethod, LogKey.requestURI, LogKey.requestId

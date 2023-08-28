@@ -5,6 +5,8 @@ enum class LogKey(private val description: String) {
     requestId("Unique id of the request"),
     requestMethod("HTTP method for the request"),
     requestURI("URI of the incoming request"),
+    someValue("Some value"),
+    mdcKeys("MDC keys"),
     responseStatus("HTTP status of the response");
 
     fun description(): String {

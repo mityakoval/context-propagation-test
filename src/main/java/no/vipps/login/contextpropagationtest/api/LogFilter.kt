@@ -1,6 +1,7 @@
 package no.vipps.login.contextpropagationtest.api
 
 import mu.KotlinLogging
+import mu.withLoggingContext
 import no.vipps.login.contextpropagationtest.logging.*
 import org.slf4j.MDC
 import org.springframework.stereotype.Component
@@ -28,12 +29,12 @@ class LogFilter : WebFilter {
 
         return chain.filter(exchange)
             .doFinally {
-                logWithEvent(
-                    LogEvent.AUDIT_HTTP_RESPONSE,
-                    LogKey.responseStatus to exchange.response.statusCode!!.value().toString()
-                ) {
-                    logger.info { "Http response status" }
-                }
+//                logWithEvent(
+//                    LogEvent.AUDIT_HTTP_RESPONSE,
+//                    LogKey.responseStatus to exchange.response.statusCode!!.value().toString()
+//                ) {
+//                    logger.info { "Http response status" }
+//                }
             }.contextWrite(mdcContext)
     }
 }
